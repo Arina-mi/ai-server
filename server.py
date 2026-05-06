@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 from openai import OpenAI
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
+CORS(app)  # 🔥 ВОТ ЭТО ГЛАВНОЕ
 
-client = OpenAI(api_key="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")  # 👈 вставь свой ключ
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/detect", methods=["POST"])
 def detect():
@@ -32,7 +35,8 @@ def detect():
         return jsonify({"topic": topic})
 
     except Exception as e:
-        return jsonify({"topic": "Без темы", "error": str(e)})
+        print("AI ERROR:", e)
+        return jsonify({"topic": "Без темы"})
 
 
 if __name__ == "__main__":
